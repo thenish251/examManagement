@@ -14,6 +14,9 @@ const createMCQ = async (req, res) => {
 
 const getAllMCQsForExam = async (req, res) => {
   try {
+    if (!req.params.examId) {
+      return res.status(400).json({ error: 'Invalid examId' });
+    }
     const mcqs = await MCQ.find({ exam: req.params.examId });
     res.status(200).json(mcqs);
   } catch (error) {
