@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './McqList.css'; // Import your CSS file
 
@@ -8,16 +8,17 @@ const McqList = ({ examId }) => {
   const [newMCQOptions, setNewMCQOptions] = useState([]);
   const [newMCQCorrectAnswer, setNewMCQCorrectAnswer] = useState('');
 
+const fetchMCQs = useCallback(() => {
+  console.log(examId); // Add this line
+  axios.get(`http://localhost:3000/mcqs/exam/${examId}`)
+    .then(response => setMCQs(response.data))
+    .catch(error => console.error('Error fetching MCQs:', error));
+}, [examId]);
+
   useEffect(() => {
     // Fetch MCQs for a specific exam from the server on component mount
     fetchMCQs();
-  }, [examId]); // Trigger fetchMCQs when examId changes
-
-  const fetchMCQs = () => {
-    axios.get(`http://localhost:3000/mcqs/exam/${examId}`)
-      .then(response => setMCQs(response.data))
-      .catch(error => console.error('Error fetching MCQs:', error));
-  };
+  }, [fetchMCQs, examId]);
 
   const handleAddMCQ = () => {
     // Implement logic to add a new MCQ for the specific exam
